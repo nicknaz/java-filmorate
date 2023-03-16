@@ -15,7 +15,7 @@ public class User {
     private int id;
     @Email
     private String email;
-    @Pattern(regexp = "^[a-zA-Z0-9+_.-]$")
+    @Pattern(regexp = "\\S+")
     private String login;
     private String name;
     @PastOrPresent
@@ -25,7 +25,7 @@ public class User {
         this.id = id;
         this.email = email;
         this.login = login;
-        if(name == null){
+        if(name == null || name.isBlank()){
             this.name = login;
         }
         else{
