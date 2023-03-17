@@ -7,18 +7,18 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class FilmsManager {
-    private static FilmsManager instance;
+public class FilmService {
+    private static FilmService instance;
     private static Map<Integer, Film> films;
     static int generatorId = 1;
 
-    private FilmsManager(){
+    private FilmService(){
         films = new HashMap<>();
     }
 
-    public static FilmsManager getInstance(){
+    public static FilmService getInstance(){
         if(instance == null)
-            instance = new FilmsManager();
+            instance = new FilmService();
         return instance;
     }
 

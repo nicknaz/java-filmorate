@@ -2,9 +2,7 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.*;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.PastOrPresent;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 @Getter
@@ -13,8 +11,10 @@ import java.time.LocalDate;
 @EqualsAndHashCode
 public class User {
     private int id;
+    @NotEmpty
     @Email
     private String email;
+    @NotEmpty
     @Pattern(regexp = "\\S+")
     private String login;
     private String name;

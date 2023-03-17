@@ -7,18 +7,18 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class UsersManager {
-    private static UsersManager instance;
+public class UserService {
+    private static UserService instance;
     private static Map<Integer,User> users;
     static int generatorId = 1;
 
-    private UsersManager(){
+    private UserService(){
         users = new HashMap<>();
     }
 
-    public static UsersManager getInstance(){
+    public static UserService getInstance(){
         if(instance == null)
-            instance = new UsersManager();
+            instance = new UserService();
         return instance;
     }
 
