@@ -14,7 +14,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     private Map<Integer, Film> films;
     int generatorId = 1;
 
-    private InMemoryFilmStorage(){
+    private InMemoryFilmStorage() {
         films = new HashMap<>();
     }
 
@@ -29,7 +29,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film updateFilm(Film film) {
-        if(films.containsKey(film.getId())){
+        if (films.containsKey(film.getId())) {
             films.put(film.getId(), film);
         }
         return films.get(film.getId());

@@ -21,47 +21,47 @@ public class UserService {
         this.userStorage = userStorage;
     }
 
-    public User addUser(User user){
+    public User addUser(User user) {
         return userStorage.addUser(user);
     }
 
-    public User getUserById(int id){
+    public User getUserById(int id) {
         return userStorage.getUserById(id);
     }
 
-    public Set<User> getAllUsers(){
+    public Set<User> getAllUsers() {
         return userStorage.getUsersSet();
     }
 
-    public User updateUser(User user){
+    public User updateUser(User user) {
         return userStorage.updateUser(user);
     }
 
-    public User makeFriends(int userId, int friendId){
+    public User makeFriends(int userId, int friendId) {
         try {
-            if(userStorage.getUserById(userId) == null || userStorage.getUserById(friendId) == null){
+            if (userStorage.getUserById(userId) == null || userStorage.getUserById(friendId) == null) {
                 throw new NotFoundedException("Пользователь не найден");
             }
             userStorage.getUserById(userId).getFriends().add(friendId);
             userStorage.getUserById(friendId).getFriends().add(userId);
             return userStorage.getUserById(userId);
-        }catch (NullPointerException npe){
+        } catch (NullPointerException npe) {
             throw new NotFoundedException("Пользователь не найден");
         }
 
     }
 
-    public User deleteFriends(int userId, int friendId){
+    public User deleteFriends(int userId, int friendId) {
         try {
             userStorage.getUserById(userId).getFriends().remove(friendId);
             userStorage.getUserById(friendId).getFriends().remove(userId);
             return userStorage.getUserById(userId);
-        }catch (NullPointerException npe){
+        } catch (NullPointerException npe) {
             throw new NotFoundedException("Пользователь не найден");
         }
     }
 
-    public List<User> getFriends(int id){
+    public List<User> getFriends(int id) {
         try {
             return userStorage.getUsersSet().stream()
                     .filter(u -> userStorage.getUserById(id).getFriends().contains(u.getId()))
@@ -72,7 +72,7 @@ public class UserService {
                         }
                     })
                     .collect(Collectors.toList());
-        }catch (NullPointerException npe){
+        } catch (NullPointerException npe) {
             throw new NotFoundedException("Пользователь не найден");
         }
     }

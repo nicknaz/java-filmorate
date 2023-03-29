@@ -19,33 +19,33 @@ public class FilmService {
         this.filmStorage = filmStorage;
     }
 
-    public Film addFilm(Film film){
+    public Film addFilm(Film film) {
         return filmStorage.addFilm(film);
     }
 
-    public Film getFilmById(int id){
+    public Film getFilmById(int id) {
         return filmStorage.getFilmById(id);
     }
 
-    public Set<Film> getAllfilms(){
+    public Set<Film> getAllfilms() {
         return filmStorage.getFilmsSet();
     }
 
-    public Film updateFilm(Film film){
+    public Film updateFilm(Film film) {
         return filmStorage.updateFilm(film);
     }
 
-    public Film likeFilm(int filmId, int userId){
+    public Film likeFilm(int filmId, int userId) {
         filmStorage.getFilmById(filmId).getLikes().add(userId);
         return filmStorage.getFilmById(filmId);
     }
 
-    public Film unlikeFilm(int filmId, int userId){
+    public Film unlikeFilm(int filmId, int userId) {
         filmStorage.getFilmById(filmId).getLikes().remove(userId);
         return filmStorage.getFilmById(filmId);
     }
 
-    public List<Film> getPopularFilms(int count){
+    public List<Film> getPopularFilms(int count) {
         return filmStorage.getFilmsSet().stream().sorted(new Comparator<Film>() {
             @Override
             public int compare(Film o1, Film o2) {
@@ -54,7 +54,7 @@ public class FilmService {
         }).limit(count).collect(Collectors.toList());
     }
 
-    public List<Film> getPopularFilms(){
+    public List<Film> getPopularFilms() {
         return getPopularFilms(10);
     }
 }
