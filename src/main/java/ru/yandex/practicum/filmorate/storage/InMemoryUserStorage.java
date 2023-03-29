@@ -23,7 +23,7 @@ public class InMemoryUserStorage implements UserStorage{
         user.setId(generatorId);
         users.put(generatorId, user);
         generatorId++;
-        return users.get(generatorId-1);
+        return users.get(generatorId - 1);
     }
 
     @Override

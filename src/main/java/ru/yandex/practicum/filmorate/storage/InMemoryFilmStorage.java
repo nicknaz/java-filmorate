@@ -24,7 +24,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         film.setId(generatorId);
         films.put(generatorId, film);
         generatorId++;
-        return films.get(generatorId-1);
+        return films.get(generatorId - 1);
     }
 
     @Override
