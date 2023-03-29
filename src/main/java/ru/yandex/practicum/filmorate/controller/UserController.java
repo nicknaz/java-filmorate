@@ -30,7 +30,7 @@ public class UserController {
     @GetMapping("/{id}")
     public User getUser(@PathVariable int id) {
         User user = userService.getUserById(id);
-        if(user == null){
+        if (user == null) {
             throw new NotFoundedException("Пользователь не найден");
         }
         return user;

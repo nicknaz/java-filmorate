@@ -33,7 +33,7 @@ public class FilmController {
     @GetMapping("/{id}")
     public Film getFilm(@PathVariable int id) {
         Film film = filmService.getFilmById(id);
-        if(film == null){
+        if (film == null) {
             throw new NotFoundedException("Фильм не найден");
         }
         return film;
@@ -60,10 +60,10 @@ public class FilmController {
 
     @DeleteMapping("/{id}/like/{userId}")
     public Film unlikeFilm(@PathVariable int id, @PathVariable int userId) {
-        if(userService.getUserById(userId) == null){
+        if (userService.getUserById(userId) == null) {
             throw new NotFoundedException("Пользователь не найден");
         }
-        if(filmService.getFilmById(userId) == null){
+        if (filmService.getFilmById(userId) == null) {
             throw new NotFoundedException("Фильм не найден");
         }
         return filmService.unlikeFilm(id, userId);
