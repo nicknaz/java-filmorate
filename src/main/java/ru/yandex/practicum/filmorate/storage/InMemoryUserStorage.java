@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 @Component
-public class InMemoryUserStorage implements UserStorage{
+public class InMemoryUserStorage implements UserStorage {
 
     private Map<Integer, User> users;
     int generatorId = 1;
@@ -28,7 +28,7 @@ public class InMemoryUserStorage implements UserStorage{
 
     @Override
     public User updateUser(User user) {
-        if(users.containsKey(user.getId())){
+        if (users.containsKey(user.getId())) {
             users.put(user.getId(), user);
         }
         return users.get(user.getId());
