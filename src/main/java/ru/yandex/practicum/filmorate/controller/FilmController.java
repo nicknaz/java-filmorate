@@ -26,12 +26,12 @@ public class FilmController {
     }
 
     @GetMapping
-    public Set<Film> getAllFilms(){
+    public Set<Film> getAllFilms() {
         return filmService.getAllfilms();
     }
 
     @GetMapping("/{id}")
-    public Film getFilm(@PathVariable int id){
+    public Film getFilm(@PathVariable int id) {
         Film film = filmService.getFilmById(id);
         if(film == null){
             throw new NotFoundedException("Фильм не найден");
@@ -40,26 +40,26 @@ public class FilmController {
     }
 
     @PostMapping
-    public Film addFilm(@Valid @RequestBody Film film){
+    public Film addFilm(@Valid @RequestBody Film film) {
         Film newFilm = filmService.addFilm(film);
         log.info("Добавлен фильм: " + newFilm.toString());
         return newFilm;
     }
 
     @PutMapping
-    public Film updateFilm(@Valid @RequestBody Film film){
+    public Film updateFilm(@Valid @RequestBody Film film) {
         Film updFilm = filmService.updateFilm(film);
         log.info("Обновлен фильм: " + updFilm.toString());
         return updFilm;
     }
 
     @PutMapping("/{id}/like/{userId}")
-    public Film likeFilm(@PathVariable int id, @PathVariable int userId){
+    public Film likeFilm(@PathVariable int id, @PathVariable int userId) {
         return filmService.likeFilm(id, userId);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
-    public Film unlikeFilm(@PathVariable int id, @PathVariable int userId){
+    public Film unlikeFilm(@PathVariable int id, @PathVariable int userId) {
         if(userService.getUserById(userId) == null){
             throw new NotFoundedException("Пользователь не найден");
         }
@@ -70,7 +70,7 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") int count){
+    public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") int count) {
         return filmService.getPopularFilms(count);
     }
 }
