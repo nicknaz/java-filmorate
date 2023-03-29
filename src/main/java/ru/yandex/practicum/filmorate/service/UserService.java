@@ -77,13 +77,13 @@ public class UserService {
         }
     }
 
-    public Set<User> getCommonFriends(int userId, int otherUserId){
+    public Set<User> getCommonFriends(int userId, int otherUserId) {
         try {
             return userStorage.getUserById(userId).getFriends().stream()
                     .filter(u -> userStorage.getUserById(otherUserId).getFriends().contains(u))
                     .map(u -> userStorage.getUserById(u))
                     .collect(Collectors.toSet());
-        }catch (NullPointerException npe){
+        } catch (NullPointerException npe) {
             throw new NotFoundedException("Пользователь не найден");
         }
     }
