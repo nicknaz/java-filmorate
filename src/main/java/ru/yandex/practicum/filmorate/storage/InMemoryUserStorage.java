@@ -30,7 +30,7 @@ public class InMemoryUserStorage implements UserStorage {
     public User updateUser(User user) {
         if (users.containsKey(user.getId())) {
             users.put(user.getId(), user);
-        }else{
+        } else {
             throw new NotFoundedException("Пользователь не найден!");
         }
         return users.get(user.getId());
