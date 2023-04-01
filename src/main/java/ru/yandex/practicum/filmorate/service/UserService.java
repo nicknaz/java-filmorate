@@ -65,12 +65,7 @@ public class UserService {
         try {
             return userStorage.getUsersSet().stream()
                     .filter(u -> userStorage.getUserById(id).getFriends().contains(u.getId()))
-                    .sorted(new Comparator<User>() { //только для тестов
-                        @Override
-                        public int compare(User o1, User o2) {
-                            return o1.getId() - o2.getId();
-                        }
-                    })
+                    .sorted(Comparator.comparingInt(User::getId))
                     .collect(Collectors.toList());
         } catch (NullPointerException npe) {
             throw new NotFoundedException("Пользователь не найден");
