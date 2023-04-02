@@ -38,48 +38,40 @@ public class UserService {
     }
 
     public User makeFriends(int userId, int friendId) {
-        try {
-            if (userStorage.getUserById(userId) == null || userStorage.getUserById(friendId) == null) {
-                throw new NotFoundedException("Пользователь не найден");
-            }
-            userStorage.getUserById(userId).getFriends().add(friendId);
-            userStorage.getUserById(friendId).getFriends().add(userId);
-            return userStorage.getUserById(userId);
-        } catch (NullPointerException npe) {
+        if (userStorage.getUserById(userId) == null || userStorage.getUserById(friendId) == null) {
             throw new NotFoundedException("Пользователь не найден");
         }
-
+        userStorage.getUserById(userId).getFriends().add(friendId);
+        userStorage.getUserById(friendId).getFriends().add(userId);
+        return userStorage.getUserById(userId);
     }
 
     public User deleteFriends(int userId, int friendId) {
-        try {
-            userStorage.getUserById(userId).getFriends().remove(friendId);
-            userStorage.getUserById(friendId).getFriends().remove(userId);
-            return userStorage.getUserById(userId);
-        } catch (NullPointerException npe) {
+        if (userStorage.getUserById(userId) == null || userStorage.getUserById(friendId) == null) {
             throw new NotFoundedException("Пользователь не найден");
         }
+        userStorage.getUserById(userId).getFriends().remove(friendId);
+        userStorage.getUserById(friendId).getFriends().remove(userId);
+        return userStorage.getUserById(userId);
     }
 
     public List<User> getFriends(int id) {
-        try {
-            return userStorage.getUsersSet().stream()
-                    .filter(u -> userStorage.getUserById(id).getFriends().contains(u.getId()))
-                    .sorted(Comparator.comparingInt(User::getId))
-                    .collect(Collectors.toList());
-        } catch (NullPointerException npe) {
+        if (userStorage.getUserById(id) == null) {
             throw new NotFoundedException("Пользователь не найден");
         }
+        return userStorage.getUsersSet().stream()
+                .filter(u -> userStorage.getUserById(id).getFriends().contains(u.getId()))
+                .sorted(Comparator.comparingInt(User::getId))
+                .collect(Collectors.toList());
     }
 
     public Set<User> getCommonFriends(int userId, int otherUserId) {
-        try {
-            return userStorage.getUserById(userId).getFriends().stream()
-                    .filter(u -> userStorage.getUserById(otherUserId).getFriends().contains(u))
-                    .map(u -> userStorage.getUserById(u))
-                    .collect(Collectors.toSet());
-        } catch (NullPointerException npe) {
+        if (userStorage.getUserById(userId) == null || userStorage.getUserById(otherUserId) == null) {
             throw new NotFoundedException("Пользователь не найден");
         }
+        return userStorage.getUserById(userId).getFriends().stream()
+                .filter(u -> userStorage.getUserById(otherUserId).getFriends().contains(u))
+                .map(u -> userStorage.getUserById(u))
+                .collect(Collectors.toSet());
     }
 }
