@@ -1,5 +1,5 @@
 # java-filmorate
-![image](https://user-images.githubusercontent.com/57040971/230021187-3ae93bab-0f95-4358-8900-f4f838729575.png)
+![image](https://user-images.githubusercontent.com/57040971/230060240-2350af63-5722-4f15-a802-d883b29236bf.png)
 
 ## Пояснение к ER-диаграмме
 В таблицах Rating и Genre хранятся id рейтинга и жанра фильма, отсылающие к таблицам с их значениями
