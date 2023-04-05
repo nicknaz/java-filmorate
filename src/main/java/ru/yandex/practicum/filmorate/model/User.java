@@ -10,8 +10,8 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -28,9 +28,9 @@ public class User {
     private String name;
     @PastOrPresent
     private LocalDate birthday;
-    private Set<Integer> friends;
+    private Map<Integer, FriendStatus> friends;
 
-    public User(int id, String email, String login, String name, LocalDate birthday, Set<Integer> friends) {
+    public User(int id, String email, String login, String name, LocalDate birthday, Map<Integer, FriendStatus> friends) {
         this.id = id;
         this.email = email;
         this.login = login;
@@ -41,7 +41,7 @@ public class User {
         }
         this.birthday = birthday;
         if (friends == null) {
-            this.friends = new HashSet<>();
+            this.friends = new HashMap<>();
         } else {
             this.friends = friends;
         }

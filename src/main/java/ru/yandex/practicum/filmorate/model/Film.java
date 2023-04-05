@@ -28,8 +28,13 @@ public class Film {
     @PositiveOrZero
     private int duration;
     private Set<Integer> likes;
+    @NotEmpty
+    private Genre genre;
+    @NotEmpty
+    private Rating rating;
 
-    public Film(int id, String name, String description, LocalDate releaseDate, int duration, Set<Integer> likes) {
+    public Film(int id, String name, String description, LocalDate releaseDate, int duration,
+                Set<Integer> likes, Genre genre, Rating rating) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -40,6 +45,8 @@ public class Film {
         } else {
             this.likes = likes;
         }
+        this.genre = genre;
+        this.rating = rating;
     }
 
 }
