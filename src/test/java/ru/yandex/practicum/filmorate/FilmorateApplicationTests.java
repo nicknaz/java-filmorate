@@ -31,7 +31,7 @@ class FilmorateApplicationTests {
 	private final RatingDbStorage ratingDbStorage;
 
 	@Test
-	public void testAddNewUser(){
+	public void testAddNewUser() {
 		assertThat(userStorage.addUser(
 				new User(1,"hi@jnh.ru", "jd", "fwcw", LocalDate.now(), null)))
 				.hasFieldOrPropertyWithValue("id", 1);
@@ -54,14 +54,14 @@ class FilmorateApplicationTests {
 	}
 
 	@Test
-	public void testUpdateUser(){
+	public void testUpdateUser() {
 		assertThat(userStorage.updateUser(
 				new User(1,"hi@jnh.ru", "hhh", "fwcw", LocalDate.now(), null)))
 				.hasFieldOrPropertyWithValue("login", "hhh");
 	}
 
 	@Test
-	public void testUnconfirmedFriends(){
+	public void testUnconfirmedFriends() {
 		friendsDbStorage.makeFriends(1, 2);
 		assertThat(userStorage.getUserById(1).getFriends()).hasSize(1);
 		assertThat(userStorage.getUserById(2).getFriends().get(1)).isNull();
@@ -69,7 +69,7 @@ class FilmorateApplicationTests {
 	}
 
 	@Test
-	public void testConfirmedFriends(){
+	public void testConfirmedFriends() {
 		userStorage.addUser(
 				new User(3,"hi@jnh.ru", "second", "second", LocalDate.now(), null));
 		friendsDbStorage.makeFriends(2, 3);
@@ -81,7 +81,7 @@ class FilmorateApplicationTests {
 	}
 
 	@Test
-	public void testRemoveUser(){
+	public void testRemoveUser() {
 		userStorage.addUser(
 				new User(4,"hi@jnh.ru", "second", "second", LocalDate.now(), null));
 		assertThat(userStorage.getUserById(4)).isNotNull();
@@ -90,13 +90,13 @@ class FilmorateApplicationTests {
 	}
 
 	@Test
-	public void testRemoveAllUser(){
+	public void testRemoveAllUser() {
 		userStorage.removeAllUsers();
 		assertThat(userStorage.getUsersSet()).hasSize(0);
 	}
 
 	@Test
-	public void testAddFilm(){
+	public void testAddFilm() {
 		Set genres = new HashSet<>();
 		genres.add(new Genre(1));
 		assertThat(filmDbStorage.addFilm(
@@ -112,7 +112,7 @@ class FilmorateApplicationTests {
 	}
 
 	@Test
-	public void testFilmGetGenre(){
+	public void testFilmGetGenre() {
 		assertThat(filmDbStorage
 				.getFilmById(1)
 				.getGenres()
@@ -120,14 +120,14 @@ class FilmorateApplicationTests {
 	}
 
 	@Test
-	public void testFilmGetMPA(){
+	public void testFilmGetMPA() {
 		assertThat(filmDbStorage
 					.getFilmById(1)
 					.getMpa()).hasFieldOrPropertyWithValue("name","G");
 	}
 
 	@Test
-	public void testRemoveFilm(){
+	public void testRemoveFilm() {
 		Set genres = new HashSet<>();
 		genres.add(new Genre(1));
 		filmDbStorage.addFilm(
@@ -146,37 +146,37 @@ class FilmorateApplicationTests {
 	}
 
 	@Test
-	public void testGetMPA(){
+	public void testGetMPA() {
 		assertThat(ratingDbStorage.getRatingById(1))
 				.hasFieldOrPropertyWithValue("name", "G");
 	}
 
 	@Test
-	public void testGetAllMPA(){
+	public void testGetAllMPA() {
 		assertThat(ratingDbStorage.getRatings())
 				.hasSize(5);
 	}
 
 	@Test
-	public void testGetGenre(){
+	public void testGetGenre() {
 		assertThat(genreDbStorage.getGenreById(1))
 				.hasFieldOrPropertyWithValue("name", "Комедия");
 	}
 
 	@Test
-	public void testGetAllGenres(){
+	public void testGetAllGenres() {
 		assertThat(genreDbStorage.getGenres())
 				.hasSize(6);
 	}
 
 	@Test
-	public void testLikeFilm(){
+	public void testLikeFilm() {
 		likeDbStorage.likeFilm(1, 1);
 		assertThat(filmDbStorage.getFilmById(1).getLikes()).hasSize(1);
 	}
 
 	@Test
-	public void testUnlikeFilm(){
+	public void testUnlikeFilm() {
 		likeDbStorage.unlikeFilm(1, 1);
 		assertThat(filmDbStorage.getFilmById(1).getLikes()).hasSize(0);
 	}
