@@ -1,7 +1,10 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.dao.LikeDbStorage;
+import ru.yandex.practicum.filmorate.exception.NotFoundedException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
@@ -12,10 +15,12 @@ import java.util.stream.Collectors;
 @Service
 public class FilmService {
     private FilmStorage filmStorage;
+    private LikeDbStorage likeDbStorage;
 
     @Autowired
-    public FilmService(FilmStorage filmStorage) {
+    public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage, LikeDbStorage likeDbStorage) {
         this.filmStorage = filmStorage;
+        this.likeDbStorage = likeDbStorage;
     }
 
     public Film addFilm(Film film) {
@@ -31,16 +36,21 @@ public class FilmService {
     }
 
     public Film updateFilm(Film film) {
+        if (filmStorage.getFilmById(film.getId()) == null) {
+            throw new NotFoundedException("Фильм не найден");
+        }
         return filmStorage.updateFilm(film);
     }
 
     public Film likeFilm(int filmId, int userId) {
         filmStorage.getFilmById(filmId).getLikes().add(userId);
+        likeDbStorage.likeFilm(filmId, userId);
         return filmStorage.getFilmById(filmId);
     }
 
     public Film unlikeFilm(int filmId, int userId) {
         filmStorage.getFilmById(filmId).getLikes().remove(userId);
+        likeDbStorage.unlikeFilm(filmId, userId);
         return filmStorage.getFilmById(filmId);
     }
 

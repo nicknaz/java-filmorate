@@ -1,9 +1,10 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.dao.FriendsDbStorage;
 import ru.yandex.practicum.filmorate.exception.NotFoundedException;
-import ru.yandex.practicum.filmorate.model.FriendStatus;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
@@ -16,10 +17,12 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private UserStorage userStorage;
+    private FriendsDbStorage friendsDbStorage;
 
     @Autowired
-    public UserService(UserStorage userStorage) {
+    public UserService(@Qualifier("userDbStorage") UserStorage userStorage, FriendsDbStorage friendsDbStorage) {
         this.userStorage = userStorage;
+        this.friendsDbStorage = friendsDbStorage;
     }
 
     public User addUser(User user) {
@@ -35,6 +38,9 @@ public class UserService {
     }
 
     public User updateUser(User user) {
+        if (userStorage.getUserById(user.getId()) == null) {
+            throw new NotFoundedException("Пользователь не найден");
+        }
         return userStorage.updateUser(user);
     }
 
@@ -42,14 +48,9 @@ public class UserService {
         if (userStorage.getUserById(userId) == null || userStorage.getUserById(friendId) == null) {
             throw new NotFoundedException("Пользователь не найден");
         }
-        if(userStorage.getUserById(userId).getFriends().containsKey(friendId)
-            && userStorage.getUserById(userId).getFriends().get(friendId) == FriendStatus.SUBSCRIBER){
-            userStorage.getUserById(userId).getFriends().put(friendId, FriendStatus.FRIEND);
-            userStorage.getUserById(friendId).getFriends().put(userId, FriendStatus.FRIEND);
-        }else{
-            userStorage.getUserById(userId).getFriends().put(friendId, FriendStatus.UNCONFIRMED);
-            userStorage.getUserById(friendId).getFriends().put(userId, FriendStatus.SUBSCRIBER);
-        }
+        User user = userStorage.getUserById(userId);
+        User friend = userStorage.getUserById(friendId);
+        friendsDbStorage.makeFriends(userId, friendId);
         return userStorage.getUserById(userId);
     }
 
@@ -59,6 +60,7 @@ public class UserService {
         }
         userStorage.getUserById(userId).getFriends().remove(friendId);
         userStorage.getUserById(friendId).getFriends().remove(userId);
+        friendsDbStorage.removeFriend(userId, friendId);
         return userStorage.getUserById(userId);
     }
 
