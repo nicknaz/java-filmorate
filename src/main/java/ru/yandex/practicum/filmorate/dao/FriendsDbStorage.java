@@ -16,14 +16,14 @@ public class FriendsDbStorage {
         String sqlQuery = "SELECT * FROM friends WHERE (userId = ? OR friendID = ?) AND (userId = ? OR friendID = ?)";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sqlQuery, userId, userId, friendId, friendId);
         if (rowSet.next()) {
-            if(rowSet.getInt("friendId") == userId){
+            if (rowSet.getInt("friendId") == userId) {
                 sqlQuery = "UPDATE friends SET status = true WHERE userId = ? AND friendId = ?";
                 jdbcTemplate.update(sqlQuery, friendId, userId);
             }
         } else {
             sqlQuery = "INSERT INTO friends(userId, friendId, status) VALUES (?, ?, false)";
             jdbcTemplate.update(sqlQuery, userId, friendId);
-        }//H2 почему то не работает с upsert
+        } //H2 почему то не работает с upsert
     }
 
     public SqlRowSet getAllFriends(int userId) {
