@@ -106,7 +106,7 @@ public class UserDbStorage implements UserStorage {
         while (rowSet.next()) {
             if (rowSet.getInt("userID") == user.getId()) {
                 user.getFriends().put(rowSet.getInt("friendId"), rowSet.getBoolean("status"));
-            } else if(rowSet.getBoolean("status")) {
+            } else if (rowSet.getBoolean("status")) {
                 user.getFriends().put(rowSet.getInt("userId"), rowSet.getBoolean("status"));
             }
         }
