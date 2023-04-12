@@ -18,7 +18,7 @@ public class FilmRatingDbStorage {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Rating getRating(int ratingId){
+    public Rating getRating(int ratingId) {
         String sqlQuery = "SELECT * FROM Ratings" +
                 " WHERE ratingId = ?";
         List<Rating> ratings = jdbcTemplate.query(sqlQuery, this::mapRowToRating, ratingId);
@@ -26,7 +26,7 @@ public class FilmRatingDbStorage {
         return rating;
     }
 
-    public int getRatingIdByName(String name){
+    public int getRatingIdByName(String name) {
         String sqlQuery = "SELECT ratingId FROM Ratings" +
                 " WHERE name = ?";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sqlQuery, name);

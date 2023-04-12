@@ -17,7 +17,7 @@ public class GenreService {
         this.genreDbStorage = genreDbStorage;
     }
 
-    public Genre getGenreById(int id){
+    public Genre getGenreById(int id) {
         Genre genre = genreDbStorage.getGenreById(id);
         if (genre == null) {
             throw new NotFoundedException("Жанр с таким id не найден!");
@@ -25,7 +25,7 @@ public class GenreService {
         return genre;
     }
 
-    public Collection<Genre> getAllGenres(){
+    public Collection<Genre> getAllGenres() {
         return genreDbStorage.getGenres();
     }
 }

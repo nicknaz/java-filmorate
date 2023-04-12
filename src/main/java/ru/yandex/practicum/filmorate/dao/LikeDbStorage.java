@@ -15,19 +15,19 @@ public class LikeDbStorage {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Set<Integer> getFilmLikes(int filmId){
+    public Set<Integer> getFilmLikes(int filmId) {
         String sqlQuery = "SELECT userId FROM likes WHERE filmId = ?";
         return new HashSet<Integer>(jdbcTemplate.query(sqlQuery,
                 (ResultSet resultSet, int rowNum) -> resultSet.getInt("userId"),
                 filmId));
     }
 
-    public void likeFilm(int filmId, int userId){
+    public void likeFilm(int filmId, int userId) {
         String sqlQuery = "INSERT INTO likes(filmId, userId) VALUES (?, ?)";
         jdbcTemplate.update(sqlQuery, filmId, userId);
     }
 
-    public void unlikeFilm(int filmId, int userId){
+    public void unlikeFilm(int filmId, int userId) {
         String sqlQuery = "DELETE FROM likes WHERE filmId = ? AND userId = ?";
         jdbcTemplate.update(sqlQuery, filmId, userId);
     }

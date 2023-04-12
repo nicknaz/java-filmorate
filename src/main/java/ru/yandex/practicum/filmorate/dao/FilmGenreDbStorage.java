@@ -20,7 +20,7 @@ public class FilmGenreDbStorage {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<Genre> getFilmGenres(int filmId){
+    public List<Genre> getFilmGenres(int filmId) {
         String sqlQuery = "SELECT * FROM FilmGenre AS fg " +
                 "LEFT OUTER JOIN Genres as g ON fg.genreId = g.genreId" +
                 " WHERE fg.filmId = ?";
@@ -28,7 +28,7 @@ public class FilmGenreDbStorage {
         return genres;
     }
 
-    public int getGenreIdByName(String name){
+    public int getGenreIdByName(String name) {
         String sqlQuery = "SELECT * FROM Genres" +
                 " WHERE name = ?";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sqlQuery, name);
@@ -40,19 +40,19 @@ public class FilmGenreDbStorage {
         }
     }
 
-    public void addFilmGenres(int filmId, Collection<Genre> genres){
+    public void addFilmGenres(int filmId, Collection<Genre> genres) {
         String sqlQuery = "INSERT INTO FilmGenre(filmId, genreId) VALUES (?, ?)";
         for (Genre genre : genres) {
             jdbcTemplate.update(sqlQuery, filmId, genre.getId());
         }
     }
 
-    public void removeFilmGenres(int filmId){
+    public void removeFilmGenres(int filmId) {
         String sqlQuery = "DELETE FROM FilmGenre WHERE filmId = ?";
         jdbcTemplate.update(sqlQuery, filmId);
     }
 
-    public void updateFilmGenres(int filmId, Collection<Genre> genres){
+    public void updateFilmGenres(int filmId, Collection<Genre> genres) {
         removeFilmGenres(filmId);
         addFilmGenres(filmId, genres);
     }

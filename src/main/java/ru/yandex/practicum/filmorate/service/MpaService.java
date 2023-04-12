@@ -17,7 +17,7 @@ public class MpaService {
         this.ratingDbStorage = ratingDbStorage;
     }
 
-    public Rating getMpaById(int id){
+    public Rating getMpaById(int id) {
         Rating rating = ratingDbStorage.getRatingById(id);
         if (rating == null) {
             throw new NotFoundedException("Рейтинг с таким id не найден!");
@@ -25,7 +25,7 @@ public class MpaService {
         return rating;
     }
 
-    public Set<Rating> getAllMpa(){
+    public Set<Rating> getAllMpa() {
         return ratingDbStorage.getRatings();
     }
 }
