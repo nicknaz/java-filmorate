@@ -1,12 +1,10 @@
 package ru.yandex.practicum.filmorate.dao;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
@@ -25,11 +23,10 @@ import java.util.Set;
 public class UserDbStorage implements UserStorage {
 
     private final JdbcTemplate jdbcTemplate;
-    FriendsDbStorage friendsDbStorage;
 
-    public UserDbStorage(JdbcTemplate jdbcTemplate, @Autowired FriendsDbStorage friendsDbStorage) {
+
+    public UserDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.friendsDbStorage = friendsDbStorage;
     }
 
     @Override
@@ -57,21 +54,13 @@ public class UserDbStorage implements UserStorage {
                 user.getName(),
                 Date.valueOf(user.getBirthday()),
                 user.getId());
-        /*for (Integer id : user.getFriends().keySet()) {
-            if(user.getFriends().get(id) == FriendStatus.FRIEND){
-                friendsDbStorage.makeFriends(user.getId(), id, true);
-            }else{
-                friendsDbStorage.makeFriends(user.getId(), id, false);
-            }
-        }*/
         return user;
     }
 
     @Override
     public Set<User> getUsersSet() {
         String sqlQuery = "SELECT userId, email, login, name, birthday FROM users";
-        Set<User> users = new HashSet<>(jdbcTemplate.query(sqlQuery, this::mapRowToUser));
-        return users;
+        return new HashSet<>(jdbcTemplate.query(sqlQuery, this::mapRowToUser));
     }
 
     @Override
@@ -102,14 +91,6 @@ public class UserDbStorage implements UserStorage {
                 .name(resultSet.getString("name"))
                 .birthday(resultSet.getDate("birthday").toLocalDate())
                 .build();
-        SqlRowSet rowSet = friendsDbStorage.getAllFriends(user.getId());
-        while (rowSet.next()) {
-            if (rowSet.getInt("userID") == user.getId()) {
-                user.getFriends().put(rowSet.getInt("friendId"), rowSet.getBoolean("status"));
-            } else if (rowSet.getBoolean("status")) {
-                user.getFriends().put(rowSet.getInt("userId"), rowSet.getBoolean("status"));
-            }
-        }
         return user;
     }
 }

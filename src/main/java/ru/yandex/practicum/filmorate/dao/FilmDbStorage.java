@@ -1,12 +1,12 @@
 package ru.yandex.practicum.filmorate.dao;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Rating;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.sql.Date;
@@ -22,18 +22,10 @@ import java.util.Set;
 public class FilmDbStorage implements FilmStorage {
 
     private final JdbcTemplate jdbcTemplate;
-    FilmGenreDbStorage filmGenreDbStorage;
-    FilmRatingDbStorage filmRatingDbStorage;
-    LikeDbStorage likeDbStorage;
 
-    public FilmDbStorage(JdbcTemplate jdbcTemplate,
-                         @Autowired FilmGenreDbStorage filmGenreDbStorage,
-                         @Autowired FilmRatingDbStorage filmRatingDbStorage,
-                         @Autowired LikeDbStorage likeDbStorage) {
+
+    public FilmDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.filmGenreDbStorage = filmGenreDbStorage;
-        this.filmRatingDbStorage = filmRatingDbStorage;
-        this.likeDbStorage = likeDbStorage;
     }
 
     @Override
@@ -50,10 +42,7 @@ public class FilmDbStorage implements FilmStorage {
             return stmt;
         }, keyHolder);
         film.setId(keyHolder.getKey().intValue());
-        if (film.getGenres() != null) {
-            filmGenreDbStorage.addFilmGenres(film.getId(), film.getGenres());
-        }
-        film.setMpa(filmRatingDbStorage.getRating(film.getMpa().getId()));
+        film.setMpa(new Rating(film.getMpa().getId()));
         return film;
     }
 
@@ -76,7 +65,7 @@ public class FilmDbStorage implements FilmStorage {
                 film.getMpa().getId(),
                 film.getRate(),
                 film.getId());
-        filmGenreDbStorage.updateFilmGenres(film.getId(), film.getGenres());
+
         return getFilmById(film.getId());
     }
 
@@ -115,11 +104,7 @@ public class FilmDbStorage implements FilmStorage {
                 .releaseDate(resultSet.getDate("releaseDate").toLocalDate())
                 .duration(resultSet.getInt("duration"))
                 .build();
-        if (film.getGenres() != null) {
-            film.setGenres(new HashSet<>(filmGenreDbStorage.getFilmGenres(film.getId())));
-        }
-        film.setMpa(filmRatingDbStorage.getRating(resultSet.getInt("ratingId")));
-        film.setLikes(likeDbStorage.getFilmLikes(film.getId()));
+        film.setMpa(new Rating(resultSet.getInt("ratingId")));
         return film;
     }
 }
