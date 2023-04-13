@@ -1,7 +1,10 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.dao.FriendsDbStorage;
 import ru.yandex.practicum.filmorate.exception.NotFoundedException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
@@ -15,10 +18,12 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private UserStorage userStorage;
+    private FriendsDbStorage friendsDbStorage;
 
     @Autowired
-    public UserService(UserStorage userStorage) {
+    public UserService(@Qualifier("userDbStorage") UserStorage userStorage, FriendsDbStorage friendsDbStorage) {
         this.userStorage = userStorage;
+        this.friendsDbStorage = friendsDbStorage;
     }
 
     public User addUser(User user) {
@@ -26,14 +31,24 @@ public class UserService {
     }
 
     public User getUserById(int id) {
-        return userStorage.getUserById(id);
+        User user = userStorage.getUserById(id);
+        if (user == null) {
+            throw new NotFoundedException("Пользователь не найден");
+        }
+        initFriends(user);
+        return user;
     }
 
     public Set<User> getAllUsers() {
-        return userStorage.getUsersSet();
+        Set<User> users = userStorage.getUsersSet();
+        initFriends(users);
+        return users;
     }
 
     public User updateUser(User user) {
+        if (userStorage.getUserById(user.getId()) == null) {
+            throw new NotFoundedException("Пользователь не найден");
+        }
         return userStorage.updateUser(user);
     }
 
@@ -41,9 +56,10 @@ public class UserService {
         if (userStorage.getUserById(userId) == null || userStorage.getUserById(friendId) == null) {
             throw new NotFoundedException("Пользователь не найден");
         }
-        userStorage.getUserById(userId).getFriends().add(friendId);
-        userStorage.getUserById(friendId).getFriends().add(userId);
-        return userStorage.getUserById(userId);
+        friendsDbStorage.makeFriends(userId, friendId);
+        User user = getUserById(userId);
+        initFriends(user);
+        return user;
     }
 
     public User deleteFriends(int userId, int friendId) {
@@ -52,15 +68,18 @@ public class UserService {
         }
         userStorage.getUserById(userId).getFriends().remove(friendId);
         userStorage.getUserById(friendId).getFriends().remove(userId);
-        return userStorage.getUserById(userId);
+        friendsDbStorage.removeFriend(userId, friendId);
+        User user = getUserById(userId);
+        initFriends(user);
+        return user;
     }
 
     public List<User> getFriends(int id) {
         if (userStorage.getUserById(id) == null) {
             throw new NotFoundedException("Пользователь не найден");
         }
-        return userStorage.getUsersSet().stream()
-                .filter(u -> userStorage.getUserById(id).getFriends().contains(u.getId()))
+        return getAllUsers().stream()
+                .filter(u -> getUserById(id).getFriends().containsKey(u.getId()))
                 .sorted(Comparator.comparingInt(User::getId))
                 .collect(Collectors.toList());
     }
@@ -69,9 +88,26 @@ public class UserService {
         if (userStorage.getUserById(userId) == null || userStorage.getUserById(otherUserId) == null) {
             throw new NotFoundedException("Пользователь не найден");
         }
-        return userStorage.getUserById(userId).getFriends().stream()
-                .filter(u -> userStorage.getUserById(otherUserId).getFriends().contains(u))
-                .map(u -> userStorage.getUserById(u))
+        return getUserById(userId).getFriends().keySet().stream()
+                .filter(u -> getUserById(otherUserId).getFriends().containsKey(u))
+                .map(u -> getUserById(u))
                 .collect(Collectors.toSet());
+    }
+
+    private void initFriends(Set<User> users) {
+        for (User user: users) {
+            initFriends(user);
+        }
+    }
+
+    private void initFriends(User user) {
+        SqlRowSet rowSet = friendsDbStorage.getAllFriends(user.getId());
+        while (rowSet.next()) {
+            if (rowSet.getInt("userID") == user.getId()) {
+                user.getFriends().put(rowSet.getInt("friendId"), rowSet.getBoolean("status"));
+            } else if (rowSet.getBoolean("status")) {
+                user.getFriends().put(rowSet.getInt("userId"), rowSet.getBoolean("status"));
+            }
+        }
     }
 }

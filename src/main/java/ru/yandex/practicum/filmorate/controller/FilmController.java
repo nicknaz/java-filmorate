@@ -10,7 +10,7 @@ import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/films")
@@ -26,8 +26,8 @@ public class FilmController {
     }
 
     @GetMapping
-    public Set<Film> getAllFilms() {
-        return filmService.getAllfilms();
+    public List<Film> getAllFilms() {
+        return filmService.getAllfilms().stream().sorted((o1, o2) -> o1.getId() - o2.getId()).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
@@ -55,6 +55,12 @@ public class FilmController {
 
     @PutMapping("/{id}/like/{userId}")
     public Film likeFilm(@PathVariable int id, @PathVariable int userId) {
+        if (userService.getUserById(userId) == null) {
+            throw new NotFoundedException("Пользователь не найден");
+        }
+        if (filmService.getFilmById(userId) == null) {
+            throw new NotFoundedException("Фильм не найден");
+        }
         return filmService.likeFilm(id, userId);
     }
 

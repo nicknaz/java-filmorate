@@ -1,22 +1,20 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter
 @Setter
 @ToString
 @EqualsAndHashCode
+@Builder
 public class User {
     private int id;
     @NotEmpty
@@ -28,9 +26,9 @@ public class User {
     private String name;
     @PastOrPresent
     private LocalDate birthday;
-    private Set<Integer> friends;
+    private Map<Integer, Boolean> friends;
 
-    public User(int id, String email, String login, String name, LocalDate birthday, Set<Integer> friends) {
+    public User(int id, String email, String login, String name, LocalDate birthday, Map<Integer, Boolean> friends) {
         this.id = id;
         this.email = email;
         this.login = login;
@@ -41,7 +39,7 @@ public class User {
         }
         this.birthday = birthday;
         if (friends == null) {
-            this.friends = new HashSet<>();
+            this.friends = new HashMap<>();
         } else {
             this.friends = friends;
         }
